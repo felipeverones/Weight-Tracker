@@ -21,8 +21,14 @@
     })
   }
 
+  const removeWeight = weight =>{
+	weights.value = weights.value.filter(w => w !== weight)
+  }
+
   watch(weights, newWeights =>{
     const ws = [...newWeights]
+
+	localStorage.setItem('weights', JSON.stringify(ws))
 
     if(weightChart.value){
       weightChart.value.data.labels = ws
@@ -67,7 +73,13 @@
       })
     })
 
+	
+
   }, {deep: true})
+
+  onMounted(()=>{
+	weights.value = JSON.parse(localStorage.getItem('weights')) ||''
+  })
 
 
 </script>
@@ -102,6 +114,7 @@
           <li v-for="weight in weights" :key="weight.date">
             <span>{{ weight.weight }} kg </span>
             <small>{{ new Date(weight.date).toLocaleDateString() }}</small>
+			<button class="delete" @click="removeWeight(weight)">Remover</button>
           </li>
         </ul>
       </div>
@@ -146,7 +159,7 @@ h2 {
 	background-color: white;
 	border-radius: 999px;
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-	border: 5px solid hwb(330 41% 0%);
+	border: 5px solid #ff69b4;
 	
 	margin: 0 auto 2rem;
 }
@@ -240,4 +253,16 @@ form input[type="submit"]:hover {
 	color: #888;
 	font-style: italic;
 }
+
+.delete{
+	display: block;
+	padding: 0.5rem;
+	border-radius: 0.25rem;
+	color: #e60978;
+	font-weight: bold;
+	cursor: pointer;
+	transition: 0.2s ease-in-out;
+	background-color: rgb(157, 157, 157);
+}
+
 </style>
